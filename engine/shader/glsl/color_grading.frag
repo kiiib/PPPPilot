@@ -21,7 +21,7 @@ void main()
     
     highp vec4 color = subpassLoad(in_color).rgba;
 
-    // map the color value from [0, 1] to [0, 15]
+    // map the color value from [0, 1] to [0, _COLORS]
     highp float blue_value = color.b * (_COLORS - 1.0);
     highp float red_value = color.r * (_COLORS - 1.0);
     highp float green_value = color.g * (_COLORS - 1.0);
@@ -29,18 +29,13 @@ void main()
     // find blue value belong to which block
     highp float floor_blue_value = floor(blue_value);
     highp float ceil_blue_value = ceil(blue_value);
-//    highp float floor_blue_value = floor(blue_value) / _COLORS;
-//    highp float ceil_blue_value = ceil(blue_value) / _COLORS;
-
 
     // uv.x
     highp float uv_x1 = (floor_blue_value * _COLORS + red_value) / tex_width;
     highp float uv_x2 = (ceil_blue_value * _COLORS + red_value) / tex_width;
-//    highp float uv_x1 = (floor_blue_value) + (0.5 / tex_width) + ((1.0 / _COLORS) - (1.0 / tex_width)) * color.r;
-//    highp float uv_x2 = (ceil_blue_value) + (0.5 / tex_width) + ((1.0 / _COLORS) - (1.0 / tex_width)) * color.r;
 
+    // uv.v
     highp float uv_v =  green_value / _COLORS;
-//    highp float uv_v =  (green_value / _COLORS) + (0.5 / tex_width) + ((1.0 / _COLORS) - (1.0 / tex_width)) * color.g;
 
     highp vec2 uv1 = vec2(uv_x1, uv_v);
     highp vec2 uv2 = vec2(uv_x2, uv_v);
@@ -50,9 +45,6 @@ void main()
 
     color.rgb = mix(texture1, texture2, fract(blue_value));
 
-    
-
-    
     // texture(color_grading_lut_texture_sampler, uv)
 
     out_color = color;
