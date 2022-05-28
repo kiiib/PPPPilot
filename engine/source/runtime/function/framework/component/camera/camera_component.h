@@ -8,6 +8,8 @@
 
 namespace Pilot
 {
+    class RenderCamera;
+
     enum class CameraMode : unsigned char
     {
         third_person,
